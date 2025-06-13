@@ -1,5 +1,4 @@
-# adivinha_musica
-Adivinha a Musíca
+# adivinha Musíca
 
 ## database.sql – Criação da tabela utilizador
 
@@ -310,6 +309,159 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ```
 
 * Fim do corpo e do documento HTML.
+
+---
+
+---
+
+## Explicação do JS
+
+### **1. Configuração do Jogo**
+
+```js
+const GAME_CONFIG = {
+    TOTAL_ROUNDS: 30,
+    TIME_PER_ROUND: 30,
+    MAX_HINTS: 3,
+    HINT_PENALTY: 10,
+    BASE_POINTS: 50,
+    TIME_BONUS_INTERVAL: 5
+};
+```
+
+Essas são as configurações básicas:
+
+* `TOTAL_ROUNDS`: quantas rodadas o jogo terá.
+* `TIME_PER_ROUND`: tempo (em segundos) por rodada.
+* `MAX_HINTS`: número máximo de dicas permitidas.
+* `HINT_PENALTY`: desconto de pontos por cada dica usada.
+* `BASE_POINTS`: pontos base por resposta correta.
+* `TIME_BONUS_INTERVAL`: ganha 1 ponto extra a cada 5 segundos restantes.
+
+---
+
+### **2. Estado do Jogo (`gameState`)**
+
+Armazena o progresso e status atual:
+
+* Rodada atual, tempo restante, modo de jogo, jogadores, áudio, músicas, etc.
+* A lista de músicas tem o título, artista, clipe de áudio, opções de dica e ano.
+* Variáveis como `currentSong`, `audioBuffer` e `audioSource` controlam a reprodução.
+
+---
+
+### **3. Elementos da Interface (`DOM`)**
+
+Armazena referências aos elementos HTML que o JavaScript vai controlar:
+
+* Botões, campos de texto, cronômetro, informações dos jogadores, modais de resultado, etc.
+
+---
+
+### **4. Inicialização do Jogo**
+
+Função `initGame()`:
+
+* Define o modo de jogo (single/multi).
+* Cria os jogadores.
+* Ativa os eventos de clique.
+* Inicializa o contexto de áudio.
+* Começa a primeira rodada.
+
+---
+
+### **5. Modo de Jogo: Single vs Multiplayer**
+
+* `setupSinglePlayer()`: cria apenas 1 jogador.
+* `setupMultiplayer()`: cria 4 jogadores simulados e alterna entre eles.
+
+---
+
+### **6. Reprodução da Música**
+
+A música é tocada por 5 segundos, depois o jogador pode digitar a resposta:
+
+```js
+setTimeout(() => {
+    DOM.musicAudio.pause();
+    DOM.answerInput.disabled = false;
+    ...
+}, 5000);
+```
+
+---
+
+### **7. Timer**
+
+O tempo decresce de 30 em 30 segundos. Se chegar a 0, a rodada termina automaticamente:
+
+```js
+gameState.timer = setInterval(() => {
+    gameState.timeLeft--;
+    ...
+}, 1000);
+```
+
+---
+
+### **8. Verificação da Resposta**
+
+Ao clicar em "Enviar":
+
+* Compara a resposta digitada com o título ou artista da música.
+* Se acertar, ganha pontos calculados com base no tempo e nas dicas usadas.
+
+---
+
+### **9. Pontuação**
+
+```js
+function calculatePoints() {
+    const timeBonus = Math.floor(gameState.timeLeft / GAME_CONFIG.TIME_BONUS_INTERVAL);
+    const hintsPenalty = gameState.hintsUsed * GAME_CONFIG.HINT_PENALTY;
+    return GAME_CONFIG.BASE_POINTS + timeBonus - hintsPenalty;
+}
+```
+
+* O tempo que sobrou vira bônus.
+* Dicas usadas reduzem os pontos.
+
+---
+
+### **10. Dicas**
+
+* O jogador pode clicar para receber uma sugestão (limitado a 3).
+* Dicas são exibidas como botões clicáveis que preenchem o campo de resposta.
+
+---
+
+### **11. Rodadas**
+
+A cada rodada:
+
+* Escolhe uma música aleatória.
+* Atualiza a interface.
+* Em modo multiplayer, muda o jogador atual.
+
+---
+
+### **12. Fim do Jogo**
+
+Quando todas as rodadas acabam ou todos os jogadores desistem:
+
+* Exibe o placar final.
+* Em multiplayer, mostra o ranking e quem venceu.
+
+---
+
+### **Resumo Geral**
+
+Este é um **jogo de quiz musical** onde:
+
+* Você ou outros jogadores escutam um trecho de música.
+* Tentam adivinhar título ou artista.
+* Ganham pontos conforme o desempenho.
+* O jogo termina após 30 rodadas ou se todos desistirem.
 
 ---
 
