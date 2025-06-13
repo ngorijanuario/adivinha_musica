@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adivinhe a Música</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="text-light">
+    <!-- Header -->
+    <header class="bg-black py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 text-primary fw-bold">
+                        <i class="fas fa-music me-2"></i>Advinha a Música
+                    </h1>
+                    <p class="lead">Adivinhe a música e mostre quem sabe mais!</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="login.php"><button class="btn btn-outline-light me-2">Login</button></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container my-5">
+
+        <section class="mb-5">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card border-primary h-100">
+                        <div class="card-body">
+                            <h3 class="card-title text-center mb-4">Modo de Jogo</h3>
+                            <div class="d-grid gap-3">
+                                <button class="btn btn-outline-primary btn-lg py-3" onclick="startGame('single')">
+                                    <i class="fas fa-user me-2"></i>Jogar Sozinho
+                                </button>
+                                <button class="btn btn-outline-success btn-lg py-3" onclick="startGame('multi')">
+                                    <i class="fas fa-users me-2"></i>Jogar em Grupo (4 jogadores)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-warning h-100">
+                        <div class="card-body">
+                            <h3 class="card-title text-center mb-4">
+                                <i class="fas fa-trophy me-2 text-warning"></i>Ranking
+                            </h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Jogador</th>
+                                            <th>Pontos</th>
+                                            <th>Acertos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ranking-table">
+                                        <!-- Ranking será carregado via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">© 2025 Adivinha a Musíca - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JS Personalizado -->
+    <script src="js/game.js"></script>
+    <script>
+        // Dados de exemplo para o ranking
+        const rankingData = [
+            { position: 1, name: "Ana Silva", points: 1250, correct: 28, avatar: "user.png" },
+            { position: 2, name: "Carlos Oliveira", points: 1150, correct: 25, avatar: "user.png" },
+            { position: 3, name: "Mariana Costa", points: 980, correct: 22, avatar: "user.png" },
+            { position: 4, name: "Pedro Santos", points: 875, correct: 20, avatar: "user.png" },
+            { position: 5, name: "João Pereira", points: 750, correct: 18, avatar: "user.png" }
+        ];
+
+        // Função para carregar o ranking
+        function loadRanking() {
+            const tableBody = document.getElementById('ranking-table');
+            tableBody.innerHTML = '';
+            
+            rankingData.forEach(player => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${player.position}</td>
+                    <td>
+                        <img src="img/${player.avatar}" alt="${player.name}" class="rounded-circle me-2" width="30" height="30">
+                        ${player.name}
+                    </td>
+                    <td>${player.points}</td>
+                    <td>${player.correct}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Função para iniciar o jogo
+        function startGame(mode) {
+            localStorage.setItem('gameMode', mode);
+            window.location.href = 'game.html';
+        }
+
+        // Carregar ranking quando a página carregar
+        window.onload = loadRanking;
+    </script>
+</body>
+</html>
